@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../theme';
 import { Button, Navbar, UploadArea } from '../components';
 
 const ChatPDFClone = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [uploadedFile, setUploadedFile] = useState(null);
 
   const navItems = [
@@ -31,6 +33,12 @@ const ChatPDFClone = () => {
   const handleFileUpload = (file) => {
     setUploadedFile(file);
     console.log('File uploaded:', file);
+  };
+
+  const handleStartClick = () => {
+    if (uploadedFile) {
+      navigate('/chat', { state: { pdfFile: uploadedFile } });
+    }
   };
 
   return (
@@ -95,7 +103,12 @@ const ChatPDFClone = () => {
           marginTop: theme.spacing['2xl'],
           flexWrap: 'wrap'
         }}>
-          <Button variant="primary" size="lg">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleStartClick}
+            disabled={!uploadedFile}
+          >
             시작하기
           </Button>
         </div>

@@ -1,0 +1,50 @@
+.pdf-chat-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f8f9fa;
+}
+
+.pdf-section {
+  flex: 1;
+  min-width: 0;
+  border-right: 1px solid #e5e7eb;
+  overflow: hidden;
+  background-color: white;
+}
+
+.chat-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 반응형: 태블릿 */
+@media (max-width: 1024px) {
+  .pdf-section {
+    flex: 1;
+  }
+
+  .chat-section {
+    flex: 1;
+  }
+}
+
+/* 반응형: 모바일 */
+@media (max-width: 768px) {
+  .pdf-chat-page {
+    flex-direction: column;
+  }
+
+  .pdf-section {
+    flex: 0 0 40vh;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .chat-section {
+    flex: 1;
+  }
+}
