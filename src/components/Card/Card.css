@@ -1,0 +1,21 @@
+.card {
+  position: relative;
+}
+
+.card-clickable:active {
+  transform: scale(0.98);
+}
+
+.card-header {
+  margin-bottom: 0;
+}
+
+.card-body {
+  line-height: 1.6;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,0 +1,19 @@
+.navbar {
+  width: 100%;
+}
+
+.navbar-item:hover {
+  color: #FF6154;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 1rem !important;
+  }
+}

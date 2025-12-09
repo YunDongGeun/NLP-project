@@ -1,0 +1,11 @@
+.accordion {
+  width: 100%;
+}
+
+.accordion-header:hover {
+  background-color: #F9FAFB;
+}
+
+.accordion-header:active {
+  transform: scale(0.99);
+}

@@ -1,0 +1,13 @@
+.button {
+  position: relative;
+  overflow: hidden;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:focus-visible {
+  outline: 2px solid #FF6154;
+  outline-offset: 2px;
+}

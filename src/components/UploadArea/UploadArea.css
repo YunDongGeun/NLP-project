@@ -1,0 +1,17 @@
+.upload-area {
+  position: relative;
+  user-select: none;
+}
+
+.upload-area.dragging {
+  background-color: #F3F4F6;
+  border-color: #FF6154;
+}
+
+.upload-area:hover:not(:disabled) {
+  background-color: #F3F4F6;
+}
+
+.upload-area:active:not(:disabled) {
+  transform: scale(0.99);
+}
