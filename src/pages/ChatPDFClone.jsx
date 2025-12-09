@@ -64,7 +64,7 @@ const ChatPDFClone = () => {
           margin: '0 auto',
           marginBottom: theme.spacing['2xl']
         }}>
-          AI 기반 ChatPDF로 모든 PDF 문서와 자연스럽게 대화하고,<br />
+          AI 기반으로 모든 PDF 문서와 자연스럽게 대화하고,<br />
           필요한 정보를 빠르게 찾아보세요
         </p>
 
