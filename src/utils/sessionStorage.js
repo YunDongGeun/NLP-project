@@ -1,0 +1,65 @@
+// 로컬스토리지에서 세션 ID 리스트를 관리하는 유틸리티 함수
+
+const SESSION_STORAGE_PREFIX = 'pdf_sessions_';
+
+/**
+ * 특정 사용자의 세션 ID 리스트를 가져옵니다
+ * @param {string} userId - 사용자 ID
+ * @returns {string[]} 세션 ID 배열
+ */
+export const getUserSessions = (userId) => {
+  const key = SESSION_STORAGE_PREFIX + userId;
+  const sessions = localStorage.getItem(key);
+  return sessions ? JSON.parse(sessions) : [];
+};
+
+/**
+ * 특정 사용자에게 새로운 세션 ID를 추가합니다
+ * @param {string} userId - 사용자 ID
+ * @param {string} sessionId - 추가할 세션 ID
+ */
+export const addUserSession = (userId, sessionId) => {
+  const sessions = getUserSessions(userId);
+  if (!sessions.includes(sessionId)) {
+    sessions.push(sessionId);
+    const key = SESSION_STORAGE_PREFIX + userId;
+    localStorage.setItem(key, JSON.stringify(sessions));
+  }
+};
+
+/**
+ * 특정 사용자의 세션 ID를 삭제합니다
+ * @param {string} userId - 사용자 ID
+ * @param {string} sessionId - 삭제할 세션 ID
+ */
+export const removeUserSession = (userId, sessionId) => {
+  const sessions = getUserSessions(userId);
+  const filteredSessions = sessions.filter(id => id !== sessionId);
+  const key = SESSION_STORAGE_PREFIX + userId;
+  localStorage.setItem(key, JSON.stringify(filteredSessions));
+};
+
+/**
+ * 특정 사용자의 모든 세션을 삭제합니다
+ * @param {string} userId - 사용자 ID
+ */
+export const clearUserSessions = (userId) => {
+  const key = SESSION_STORAGE_PREFIX + userId;
+  localStorage.removeItem(key);
+};
+
+/**
+ * 모든 사용자의 세션 데이터를 가져옵니다
+ * @returns {Object} 사용자별 세션 데이터 객체
+ */
+export const getAllSessions = () => {
+  const allSessions = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(SESSION_STORAGE_PREFIX)) {
+      const userId = key.replace(SESSION_STORAGE_PREFIX, '');
+      allSessions[userId] = getUserSessions(userId);
+    }
+  }
+  return allSessions;
+};

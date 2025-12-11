@@ -3,9 +3,10 @@ import { useTheme } from '../../theme';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import SuggestedQuestions from './SuggestedQuestions';
+import { askQuestion } from '../../api/pdfApi';
 import './ChatInterface.css';
 
-const ChatInterface = ({ pdfFileName }) => {
+const ChatInterface = ({ pdfFileName, sessionId, userId }) => {
   const theme = useTheme();
   const [messages, setMessages] = useState([
     {
@@ -27,7 +28,7 @@ const ChatInterface = ({ pdfFileName }) => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (text) => {
+  const handleSendMessage = async (text) => {
     const userMessage = {
       id: Date.now(),
       type: 'user',
@@ -38,18 +39,34 @@ const ChatInterface = ({ pdfFileName }) => {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    // TODO: 백엔드 API 호출하여 AI 응답 받기
-    // 현재는 임시 응답
-    setTimeout(() => {
+    try {
+      // 서버에 질문 전송
+      const response = await askQuestion(text, sessionId);
+      console.log('서버 응답:', response);
+
       const aiMessage = {
         id: Date.now() + 1,
         type: 'assistant',
-        content: '죄송합니다. AI 응답 기능은 아직 구현되지 않았습니다. 현재는 프론트엔드 UI만 구현되어 있으며, 백엔드 API와 연동하여 실제 PDF 분석 및 질문-답변 기능을 추가해야 합니다.',
+        content: response.answer,
+        timestamp: new Date(),
+        requestId: response.request_uuid,
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('질문 전송 실패:', error);
+
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'system',
+        content: `오류가 발생했습니다: ${error.message || '서버와 통신할 수 없습니다.'}`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, aiMessage]);
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
