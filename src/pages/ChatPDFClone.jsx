@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { Button, Navbar, UploadArea } from '../components';
+import PDFListSidebar from '../components/PDFListSidebar';
 import { uploadPDF } from '../api/pdfApi';
 import { addUserSession } from '../utils/sessionStorage';
 
@@ -14,6 +15,7 @@ const ChatPDFClone = () => {
   const [sessionId, setSessionId] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navItems = [
     { label: '홈', href: '#home' },
@@ -50,10 +52,14 @@ const ChatPDFClone = () => {
       // 세션 ID 저장
       setSessionId(response.session_id);
 
-      // 로컬스토리지에 세션 ID 추가
-      addUserSession(currentUser.id, response.session_id);
+      // 로컬스토리지에 PDF 메타데이터 추가
+      addUserSession(currentUser.id, {
+        sessionId: response.session_id,
+        fileName: file.name,
+        chunks: response.chunks || 0
+      });
 
-      console.log(`${currentUser.name}의 세션 ID가 저장되었습니다:`, response.session_id);
+      console.log(`${currentUser.name}의 PDF가 저장되었습니다:`, file.name);
     } catch (error) {
       console.error('파일 업로드 실패:', error);
       setUploadError(error.message || '파일 업로드에 실패했습니다.');
@@ -91,6 +97,12 @@ const ChatPDFClone = () => {
         navItems={navItems}
       />
 
+      {/* PDF 목록 사이드바 */}
+      <PDFListSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
       {/* 계정 선택 섹션 */}
       <section style={{
         padding: '2rem 1rem 0',
@@ -103,6 +115,7 @@ const ChatPDFClone = () => {
           alignItems: 'center',
           gap: theme.spacing.md,
           marginBottom: theme.spacing.lg,
+          position: 'relative',
         }}>
           <span style={{
             fontSize: theme.typography.fontSize.base,
@@ -150,6 +163,36 @@ const ChatPDFClone = () => {
               <span>{account.name}</span>
             </button>
           ))}
+
+          {/* PDF 목록 보기 버튼 */}
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            style={{
+              position: 'absolute',
+              right: '1rem',
+              padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
+              backgroundColor: theme.colors.background.main,
+              color: theme.colors.text.primary,
+              border: `2px solid ${theme.colors.border.default}`,
+              borderRadius: theme.borderRadius.lg,
+              cursor: 'pointer',
+              fontSize: theme.typography.fontSize.base,
+              fontWeight: theme.typography.fontWeight.medium,
+              transition: `all ${theme.animations.transition.normal}`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: theme.spacing.sm,
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.background.secondary;
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.background.main;
+            }}
+          >
+            <span>📂</span>
+            <span>내 PDF 목록</span>
+          </button>
         </div>
       </section>
 
