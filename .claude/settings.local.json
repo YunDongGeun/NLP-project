@@ -4,7 +4,9 @@
       "Bash(tree:*)",
       "Bash(npm install:*)",
       "Bash(npm run dev:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Implement PDF chat functionality with server integration\n\n- Add user account management with 2 mock accounts (Context API)\n- Implement PDF upload to server with session ID management\n- Add localStorage-based session tracking per user\n- Integrate server API for PDF upload and Q&A (/upload, /ask endpoints)\n- Fix PDF.js worker version compatibility (5.4.296)\n- Add ChatInterface integration with server responses\n- Implement PDF viewer with server-hosted files\n- Add account switching UI with session isolation\nEOF\n)\")",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { useTheme } from '../../theme';
 import './PDFViewer.css';
@@ -17,6 +17,7 @@ const PDFViewer = ({ file, sessionId, fileName }) => {
   const [error, setError] = useState(null);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
+    console.log('PDF 로드 성공! 총 페이지:', numPages);
     setNumPages(numPages);
     setPageNumber(1);
     setError(null);
@@ -28,11 +29,19 @@ const PDFViewer = ({ file, sessionId, fileName }) => {
   };
 
   const goToPrevPage = () => {
-    setPageNumber(prev => Math.max(prev - 1, 1));
+    setPageNumber(prev => {
+      const newPage = Math.max(prev - 1, 1);
+      console.log('이전 페이지로 이동:', prev, '->', newPage);
+      return newPage;
+    });
   };
 
   const goToNextPage = () => {
-    setPageNumber(prev => Math.min(prev + 1, numPages || 1));
+    setPageNumber(prev => {
+      const newPage = Math.min(prev + 1, numPages || 1);
+      console.log('다음 페이지로 이동:', prev, '->', newPage, '/ 총', numPages, '페이지');
+      return newPage;
+    });
   };
 
   const zoomIn = () => {
@@ -42,6 +51,12 @@ const PDFViewer = ({ file, sessionId, fileName }) => {
   const zoomOut = () => {
     setScale(prev => Math.max(prev - 0.2, 0.5));
   };
+
+  // options 메모이제이션으로 불필요한 Document 재로드 방지
+  const documentOptions = useMemo(() => ({
+    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+  }), []);
 
   return (
     <div className="pdf-viewer-container">
@@ -195,16 +210,19 @@ const PDFViewer = ({ file, sessionId, fileName }) => {
                 PDF를 불러오는 중...
               </div>
             }
-            options={{
-              cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-              cMapPacked: true,
-            }}
+            options={documentOptions}
           >
             <Page
+              key={`page_${pageNumber}`}
               pageNumber={pageNumber}
               scale={scale}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              loading={
+                <div style={{ padding: theme.spacing.md, color: theme.colors.text.secondary }}>
+                  페이지 {pageNumber}을(를) 불러오는 중...
+                </div>
+              }
             />
           </Document>
         )}
